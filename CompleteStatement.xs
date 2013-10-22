@@ -54,7 +54,7 @@ _parse()
 
     LEAVE;
 
-int
+SV *
 complete_statement(str)
     SV *str
   PREINIT:
@@ -116,7 +116,11 @@ complete_statement(str)
 
     call_parse();
 
-    RETVAL = (depth == 0);
+    RETVAL = (PL_parser->bufptr != PL_parser->bufend)
+        ? &PL_sv_undef
+        : (depth == 0)
+        ? &PL_sv_yes
+        : &PL_sv_no;
 
     FREETMPS;
     LEAVE;
